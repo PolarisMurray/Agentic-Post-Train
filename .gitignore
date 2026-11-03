@@ -1,0 +1,54 @@
+# ---- OS / Editor ----
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.env
+.python-version
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# ---- Go ----
+bin/
+*.exe
+*.test
+*.out
+coverage.*
+go.work.sum
+
+# ---- 训练产物（不进仓库） ----
+checkpoints/
+ckpt/
+outputs/
+runs/
+wandb/
+mlruns/
+logs/
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.gguf
+
+# ---- 数据 ----
+data/raw/
+data/cache/
+*.parquet
+*.arrow
+
+# ---- 上游开源代码的本地克隆（只做参考，不提交） ----
+third_party/
