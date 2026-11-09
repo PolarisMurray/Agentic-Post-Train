@@ -35,6 +35,10 @@ Agentic-Post-Train/
 ├── Post-Train/
 │   ├── SFT/             # 监督微调：轨迹数据构造、格式化、训练
 │   └── RL/              # 强化学习：rollout、奖励设计、策略优化
+├── scripts/
+│   └── fetch_upstream.sh  # 按锁定的 commit 拉取上游仓库
+├── third_party/         # 上游源码（仅本地，git 忽略）
+├── third_party.lock     # 上游仓库地址 + 锁定的 commit
 ├── .gitignore
 ├── .gitattributes
 ├── .editorconfig
@@ -54,7 +58,6 @@ Agentic-Post-Train/
 | --- | --- | --- |
 | **Codex** | [openai/codex](https://github.com/openai/codex)（Codex CLI，主体为 Rust） | agent loop、工具调用协议、沙箱与命令执行审批、上下文管理 |
 | **Kimi** | [MoonshotAI/kimi-cli](https://github.com/MoonshotAI/kimi-cli)（Python） | 工具体系、多轮任务编排、与 Kimi 模型的 agentic 能力配合方式 |
-| **DeepSeek** | DeepSeek 开源仓库 / 技术报告（具体对标仓库待定） | 模型侧的 tool-use / thinking 格式，以及 agent 数据与 RL 训练思路 |
 
 ### 语言分工
 
@@ -63,7 +66,7 @@ Agentic-Post-Train/
 
 ### 对比维度
 
-改写过程中按下面几个维度记录三者的差异，最终整理成对比文档：
+改写过程中按下面几个维度记录 Codex 与 Kimi 的差异，最终整理成对比文档：
 
 1. **Agent Loop**：单轮 / 多轮结构、终止条件、错误恢复
 2. **工具调用**：工具定义格式、调用解析、并行调用、结果回填
@@ -76,7 +79,7 @@ Agentic-Post-Train/
 
 - 先读懂、再改写：每个模块先写清楚上游的实现方式，再给出 Go / Python 版本。
 - 只保留对 agent 后训练有用的部分，不追求功能完全对齐。
-- 上游源码只在本地 `third_party/` 下克隆作参考，不提交进本仓库（已在 `.gitignore` 中忽略）。
+- 上游源码只在本地 `third_party/` 下克隆作参考，不提交进本仓库（已在 `.gitignore` 中忽略）。版本锁定在 `third_party.lock`，执行 `./scripts/fetch_upstream.sh` 即可复现。
 - 改写代码遵守上游的开源协议，相关文件注明来源。
 
 ---
@@ -100,9 +103,10 @@ Agentic-Post-Train/
 ## Roadmap
 
 - [x] 仓库初始化、目录结构、git 配置
-- [ ] Agent_source：拉取三个上游仓库，梳理各自架构
+- [x] Agent_source：锁定并拉取上游仓库（codex、kimi-cli）
+- [ ] Agent_source：梳理 codex / kimi-cli 各自架构
 - [ ] Agent_source：Go 版最小 agent loop + 基础工具（shell / 读写文件）
-- [ ] Agent_source：三框架对比文档 v1
+- [ ] Agent_source：Codex vs Kimi 对比文档 v1
 - [ ] Agent_source：轨迹导出格式定义
 - [ ] Post-Train/SFT：轨迹 → SFT 数据管线 + 首个训练实验
 - [ ] Post-Train/RL：rollout 环境接入 + 首个 RL 实验

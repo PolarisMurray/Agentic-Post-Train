@@ -35,6 +35,10 @@ Agentic-Post-Train/
 ├── Post-Train/
 │   ├── SFT/             # Supervised fine-tuning: trajectory data, formatting, training
 │   └── RL/              # Reinforcement learning: rollout, reward design, policy optimization
+├── scripts/
+│   └── fetch_upstream.sh  # Clone upstream repos at pinned commits
+├── third_party/         # Upstream sources (local only, git-ignored)
+├── third_party.lock     # Upstream repo URLs + pinned commits
 ├── .gitignore
 ├── .gitattributes
 ├── .editorconfig
@@ -54,7 +58,6 @@ Agentic-Post-Train/
 | --- | --- | --- |
 | **Codex** | [openai/codex](https://github.com/openai/codex) (Codex CLI, mainly Rust) | Agent loop, tool-calling protocol, sandboxing & command approval, context management |
 | **Kimi** | [MoonshotAI/kimi-cli](https://github.com/MoonshotAI/kimi-cli) (Python) | Tool system, multi-turn task orchestration, how it pairs with Kimi models' agentic abilities |
-| **DeepSeek** | DeepSeek open-source repos / tech reports (exact target repo TBD) | Model-side tool-use / thinking formats, agent data and RL training approaches |
 
 ### Language Split
 
@@ -63,7 +66,7 @@ Agentic-Post-Train/
 
 ### Comparison Dimensions
 
-While rewriting, we record the differences across these dimensions and compile them into a comparison doc:
+While rewriting, we record how Codex and Kimi differ along these dimensions and compile them into a comparison doc:
 
 1. **Agent Loop**: single-turn / multi-turn structure, termination conditions, error recovery
 2. **Tool Calling**: tool definition format, call parsing, parallel calls, result injection
@@ -76,7 +79,7 @@ While rewriting, we record the differences across these dimensions and compile t
 
 - Understand first, then rewrite: document how upstream implements each module before writing the Go / Python version.
 - Keep only what matters for agentic post-training. Full feature parity is not a goal.
-- Upstream sources are cloned locally under `third_party/` for reference only and are never committed (ignored in `.gitignore`).
+- Upstream sources are cloned locally under `third_party/` for reference only and are never committed (ignored in `.gitignore`). Commits are pinned in `third_party.lock`; run `./scripts/fetch_upstream.sh` to reproduce them.
 - Rewritten code follows upstream licenses, with sources noted in the relevant files.
 
 ---
@@ -100,9 +103,10 @@ While rewriting, we record the differences across these dimensions and compile t
 ## Roadmap
 
 - [x] Repo initialization, layout, git config
-- [ ] Agent_source: clone the three upstream repos and map out their architectures
+- [x] Agent_source: pin and fetch upstream repos (codex, kimi-cli)
+- [ ] Agent_source: map out the architecture of codex / kimi-cli
 - [ ] Agent_source: minimal Go agent loop + basic tools (shell / file read & write)
-- [ ] Agent_source: framework comparison doc v1
+- [ ] Agent_source: Codex vs Kimi comparison doc v1
 - [ ] Agent_source: define trajectory export format
 - [ ] Post-Train/SFT: trajectory → SFT data pipeline + first training run
 - [ ] Post-Train/RL: rollout environment integration + first RL run
