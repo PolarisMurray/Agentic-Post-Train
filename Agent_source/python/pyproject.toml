@@ -1,0 +1,16 @@
+[project]
+name = "agent"
+version = "0.1.0"
+description = "Minimal coding agent for OpenAI-compatible models (Python port of the Go agent)"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+agent = "agent.cli:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["agent*"]
