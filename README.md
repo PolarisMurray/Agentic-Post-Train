@@ -118,6 +118,14 @@ While rewriting, we record how Codex and Kimi differ along these dimensions and 
 - Go ≥ 1.22
 - Python ≥ 3.10
 
+The Python agent uses the OpenAI SDK. Install it in a virtualenv:
+
+```bash
+cd Agent_source/python
+python3 -m venv .venv && .venv/bin/pip install -e .
+.venv/bin/agent --workdir ../.. "what does this repo do?"
+```
+
 ### API keys
 
 Keys live in a `.env` file at the repo root. It is git-ignored; only the `.env.example` template is committed.

@@ -1,9 +1,9 @@
 [project]
 name = "agent"
 version = "0.1.0"
-description = "Minimal coding agent for OpenAI-compatible models (Python port of the Go agent)"
+description = "Minimal coding agent for OpenAI-compatible models (Python port of the Go agent, built on the OpenAI SDK)"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = ["openai>=3.46"]
 
 [project.scripts]
 agent = "agent.cli:main"

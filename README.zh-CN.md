@@ -118,6 +118,14 @@ Agentic-Post-Train/
 - Go ≥ 1.22
 - Python ≥ 3.10
 
+Python 版基于 OpenAI SDK，装在虚拟环境里：
+
+```bash
+cd Agent_source/python
+python3 -m venv .venv && .venv/bin/pip install -e .
+.venv/bin/agent --workdir ../.. "这个仓库是做什么的？"
+```
+
 ### API key
 
 key 放在仓库根目录的 `.env` 文件里。它被 git 忽略，只有模板 `.env.example` 会提交。

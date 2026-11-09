@@ -28,6 +28,9 @@ type Message struct {
 	Content    string     `json:"content"`
 	ToolCalls  []ToolCall `json:"tool_calls,omitempty"`
 	ToolCallID string     `json:"tool_call_id,omitempty"`
+	// Returned by thinking models (e.g. DeepSeek in thinking mode). DeepSeek
+	// rejects requests with tools (HTTP 400) unless it is sent back unchanged.
+	ReasoningContent string `json:"reasoning_content,omitempty"`
 }
 
 type ToolCall struct {
