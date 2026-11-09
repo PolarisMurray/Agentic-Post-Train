@@ -118,6 +118,16 @@ While rewriting, we record how Codex and Kimi differ along these dimensions and 
 - Go ≥ 1.22
 - Python ≥ 3.10
 
+### API keys
+
+Keys live in a `.env` file at the repo root. It is git-ignored; only the `.env.example` template is committed.
+
+```bash
+cp .env.example .env && chmod 600 .env   # then fill in OPENAI_API_KEY, OPENAI_BASE_URL, AGENT_MODEL
+```
+
+Both the Go and Python agents load the nearest `.env` (searching up to the repo root) on startup. Variables already set in the shell take precedence.
+
 Dependencies are managed per sub-project (`go.mod` for Go, `pyproject.toml` for Python).
 
 ## License

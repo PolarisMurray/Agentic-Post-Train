@@ -13,12 +13,18 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/PolarisMurray/Agentic-Post-Train/Agent_source/internal/dotenv"
 	"github.com/PolarisMurray/Agentic-Post-Train/Agent_source/internal/llm"
 	"github.com/PolarisMurray/Agentic-Post-Train/Agent_source/internal/loop"
 	"github.com/PolarisMurray/Agentic-Post-Train/Agent_source/internal/tools"
 )
 
 func main() {
+	// Must run before the flags below read their defaults from the environment.
+	if _, err := dotenv.Load(); err != nil {
+		fatal("load .env: " + err.Error())
+	}
+
 	var (
 		workdir  = flag.String("workdir", ".", "workspace root")
 		model    = flag.String("model", os.Getenv("AGENT_MODEL"), "model name (env AGENT_MODEL)")
@@ -26,7 +32,7 @@ func main() {
 		maxSteps = flag.Int("max-steps", 30, "maximum number of model calls")
 	)
 	flag.Usage = func() {
-		fmt.Fprintln(os.Stderr, "usage: agent [flags] <task>\n\nThe API key is read from OPENAI_API_KEY.\n\nflags:")
+		fmt.Fprintln(os.Stderr, "usage: agent [flags] <task>\n\nThe API key is read from OPENAI_API_KEY (shell or the repo's .env file).\n\nflags:")
 		flag.PrintDefaults()
 	}
 	flag.Parse()

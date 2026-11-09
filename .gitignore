@@ -14,7 +14,10 @@ build/
 dist/
 .venv/
 venv/
+# 密钥：只提交 .env.example 模板，真实的 .env 永远不进仓库
 .env
+.env.*
+!.env.example
 .python-version
 .pytest_cache/
 .mypy_cache/

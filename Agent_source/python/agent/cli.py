@@ -10,15 +10,19 @@ import argparse
 import os
 import sys
 
+from agent import dotenv
 from agent.llm import Client
 from agent.loop import Agent, AgentError, default_system_prompt
 from agent.tools import ReadFile, Registry
 
 
 def main(argv: list[str] | None = None) -> int:
+    # Must run before the arguments below read their defaults from the environment.
+    dotenv.load()
+
     parser = argparse.ArgumentParser(
         prog="agent",
-        description="The API key is read from OPENAI_API_KEY.",
+        description="The API key is read from OPENAI_API_KEY (shell or the repo's .env file).",
     )
     parser.add_argument("task", nargs="+", help="what the agent should do")
     parser.add_argument("--workdir", default=".", help="workspace root")

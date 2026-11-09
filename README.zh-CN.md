@@ -118,6 +118,16 @@ Agentic-Post-Train/
 - Go ≥ 1.22
 - Python ≥ 3.10
 
+### API key
+
+key 放在仓库根目录的 `.env` 文件里。它被 git 忽略，只有模板 `.env.example` 会提交。
+
+```bash
+cp .env.example .env && chmod 600 .env   # 然后填 OPENAI_API_KEY、OPENAI_BASE_URL、AGENT_MODEL
+```
+
+Go 版和 Python 版启动时都会自动读取最近的 `.env`（向上查找，最远到仓库根目录）。shell 里已经设置的同名环境变量优先。
+
 具体依赖在各子项目中单独管理（Go 用 `go.mod`，Python 用 `pyproject.toml`）。
 
 ## License
