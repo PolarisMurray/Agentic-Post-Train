@@ -13,7 +13,7 @@ import sys
 from agent import dotenv
 from agent.llm import Client
 from agent.loop import Agent, AgentError, default_system_prompt
-from agent.tools import ReadFile, Registry
+from agent.tools import Workspace, default_tools
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -33,19 +33,26 @@ def main(argv: list[str] | None = None) -> int:
         help="OpenAI-compatible API base URL (env OPENAI_BASE_URL)",
     )
     parser.add_argument("--max-steps", type=int, default=30, help="maximum number of model calls")
+    parser.add_argument(
+        "--approval",
+        choices=["ask", "auto"],
+        default="ask",
+        help="ask before every shell command (default), or run them without asking (throwaway copies only)",
+    )
     args = parser.parse_args(argv)
 
     task = " ".join(args.task).strip()
     if not args.model:
         print("error: no model given; pass --model or set AGENT_MODEL", file=sys.stderr)
         return 1
-    root = os.path.abspath(args.workdir)
+    ws = Workspace(args.workdir)
+    approve = None if args.approval == "auto" else _ask_on_terminal
 
     agent = Agent(
         model=Client(args.base_url, os.environ.get("OPENAI_API_KEY", "")),
         model_name=args.model,
-        tools=Registry(ReadFile(root)),
-        system_prompt=default_system_prompt(root),
+        tools=default_tools(ws, approve=approve),
+        system_prompt=default_system_prompt(ws.root),
         max_steps=args.max_steps,
         log=sys.stderr,
     )
@@ -61,6 +68,14 @@ def main(argv: list[str] | None = None) -> int:
     print(f"[done] steps={res.steps} tokens={res.usage.total_tokens}", file=sys.stderr)
     print(res.final)
     return 0
+
+
+def _ask_on_terminal(command: str) -> bool:
+    print(f"\n  approve shell command?\n    $ {command}\n  [y/N] ", end="", file=sys.stderr, flush=True)
+    answer = sys.stdin.readline()
+    if not answer:
+        print("(no input, denied)", file=sys.stderr)
+    return answer.strip().lower() in ("y", "yes")
 
 
 if __name__ == "__main__":

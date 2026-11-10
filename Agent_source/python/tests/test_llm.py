@@ -7,7 +7,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from agent.llm import Client, LLMError
 from agent.loop import Agent
-from agent.tools import ReadFile, Registry
+from agent.tools import ReadFile, Registry, Workspace
 
 REASONING = "I should read a.txt first."
 
@@ -73,7 +73,7 @@ class ClientTest(unittest.TestCase):
         agent = Agent(
             model=Client(self.base_url, "sk-test"),
             model_name="deepseek-flash",
-            tools=Registry(ReadFile(self.tmp.name)),
+            tools=Registry(ReadFile(Workspace(self.tmp.name))),
         )
 
         res = agent.run("what is in a.txt?")
@@ -94,7 +94,7 @@ class ClientTest(unittest.TestCase):
         req = ChatRequest(
             model="m",
             messages=[Message(role="user", content="hi"), Message(role="assistant", content="x")],
-            tools=Registry(ReadFile(self.tmp.name)).specs(),
+            tools=Registry(ReadFile(Workspace(self.tmp.name))).specs(),
         )
         with self.assertRaises(LLMError) as ctx:
             client.chat(req)

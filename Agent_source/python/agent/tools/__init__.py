@@ -5,7 +5,11 @@ from __future__ import annotations
 import json
 from typing import Any, Protocol
 
+from agent.tools.edit_file import EditFile
 from agent.tools.read_file import ReadFile
+from agent.tools.shell import Shell
+from agent.tools.workspace import Workspace
+from agent.tools.write_file import WriteFile
 
 
 class Tool(Protocol):
@@ -22,6 +26,11 @@ class Tool(Protocol):
 
 class ToolError(Exception):
     pass
+
+
+def default_tools(ws: Workspace, approve=None, env: dict[str, str] | None = None) -> Registry:
+    """The standard tool set: read, write and edit files, and run shell commands."""
+    return Registry(ReadFile(ws), WriteFile(ws), EditFile(ws), Shell(ws, approve=approve, env=env))
 
 
 class Registry:
@@ -51,4 +60,4 @@ class Registry:
         return tool.run(args)
 
 
-__all__ = ["ReadFile", "Registry", "Tool", "ToolError"]
+__all__ = ["default_tools", "EditFile", "ReadFile", "Registry", "Shell", "Tool", "ToolError", "Workspace", "WriteFile"]

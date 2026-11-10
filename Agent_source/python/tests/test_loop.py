@@ -4,7 +4,7 @@ import unittest
 
 from agent.llm import ROLE_ASSISTANT, ChatRequest, ChatResponse, FunctionCall, Message, ToolCall, Usage
 from agent.loop import Agent, MaxStepsError
-from agent.tools import ReadFile, Registry
+from agent.tools import ReadFile, Registry, Workspace
 
 
 class ScriptedModel:
@@ -43,7 +43,7 @@ class LoopTest(unittest.TestCase):
             Message(role="", tool_calls=[call("c2", "read_file", '{"path":"missing.txt"}')]),
             Message(role="", content="the file says hello"),
         ])
-        agent = Agent(model=model, model_name="m", tools=Registry(ReadFile(self.root)), system_prompt="sys")
+        agent = Agent(model=model, model_name="m", tools=Registry(ReadFile(Workspace(self.root))), system_prompt="sys")
 
         res = agent.run("what is in a.txt?")
 
@@ -66,7 +66,7 @@ class LoopTest(unittest.TestCase):
         model = ScriptedModel([
             Message(role="", tool_calls=[call("c", "read_file", '{"path":"x"}')]) for _ in range(3)
         ])
-        agent = Agent(model=model, model_name="m", tools=Registry(ReadFile(self.root)), max_steps=2)
+        agent = Agent(model=model, model_name="m", tools=Registry(ReadFile(Workspace(self.root))), max_steps=2)
 
         with self.assertRaises(MaxStepsError) as ctx:
             agent.run("task")

@@ -3,6 +3,8 @@ from __future__ import annotations
 import os
 from typing import Any
 
+from agent.tools.workspace import Workspace
+
 MAX_READ_BYTES = 64 * 1024
 
 
@@ -17,21 +19,18 @@ class ReadFile:
         "required": ["path"],
     }
 
-    def __init__(self, root: str):
-        # The workspace directory relative paths are resolved against.
-        # It does not stop absolute paths or "../" yet; confinement comes with
-        # the write and shell tools.
-        self.root = root
+    def __init__(self, ws: Workspace):
+        self.ws = ws
 
     def run(self, args: dict[str, Any]) -> str:
-        path = args.get("path") or ""
-        if not path:
-            raise ValueError("path is empty")
-        if not os.path.isabs(path):
-            path = os.path.join(self.root, path)
+        path = self.ws.resolve(args.get("path") or "")
+        if os.path.isdir(path):
+            raise IsADirectoryError(f"{self.ws.rel(path)} is a directory; use the shell tool (ls) to list it")
         with open(path, "rb") as f:
-            data = f.read()
+            data = f.read(MAX_READ_BYTES + 1)
+        if b"\0" in data:
+            raise ValueError(f"{self.ws.rel(path)} looks like a binary file")
         text = data[:MAX_READ_BYTES].decode("utf-8", errors="replace")
         if len(data) > MAX_READ_BYTES:
-            return text + f"\n... [truncated: file is {len(data)} bytes]"
+            return text + f"\n... [truncated: file is {os.path.getsize(path)} bytes]"
         return text
